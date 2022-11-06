@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kakao.stock.mapper.KakaoRtStockDayInfoMapper">
+   <insert id="insert" parameterType="com.kakao.stock.vo.KakaoRtStockDayInfoVo">
+		/* tb_rt_stock_day_info.insert */
+		INSERT INTO tb_rt_stock_day_info 
+			(bas_dt,
+			code,
+			o_prc,
+			n_prc,
+			reg_dt	
+		)
+		VALUES (
+		    DATE_FORMAT(NOW(),'%Y%m%d'),
+		    #{code, jdbcType=VARCHAR},
+		    #{oPrc, jdbcType=NUMERIC},
+		    #{nPrc, jdbcType=NUMERIC},
+		    NOW()
+		)
+    </insert>
+    
+    <update id="update" parameterType="com.kakao.stock.vo.KakaoRtStockDayInfoVo">
+		/* tb_rt_stock_day_info.update */
+		UPDATE tb_rt_stock_day_info
+		   SET 
+		   		upd_dt = NOW()
+		      <if test='nPrc != null'> 
+		       ,n_prc = #{nPrc, jdbcType=NUMERIC}
+		      </if>
+		       <if test='trqt != null'> 
+		       ,trqt = #{trqt, jdbcType=NUMERIC}
+		      </if>
+		        <if test='inqCn != null'> 
+		       ,inq_cn = #{inqCn, jdbcType=NUMERIC}
+		      </if>
+		 	WHERE
+		       bas_dt=DATE_FORMAT(NOW(),'%Y%m%d')
+		       AND code = #{code}
+    </update>
+    
+    <select id="countList" parameterType="com.kakao.stock.vo.KakaoRtStockDayInfoVo" resultType="int">
+/* tb_rt_stock_day_info.countList */
+SELECT COUNT(*) 
+  FROM tb_rt_stock_day_info A
+ WHERE 
+     	A.bas_dt=DATE_FORMAT(NOW(),'%Y%m%d')
+     	<if test='code != null'> 
+		       AND code = #{code, jdbcType=VARCHAR}
+		      </if>
+
+    </select>
+    
+     <resultMap id="detailResultMap" type="com.kakao.stock.resultset.KakaoRtStockDayInfoRS">
+        <result column="A.basDt" property="kakaoRtStockDayInfo.basDt"/>
+        <result column="A.code" property="kakaoRtStockDayInfo.code"/>
+        <result column="A.oPrc" property="kakaoRtStockDayInfo.oPrc"/>
+        <result column="A.nPrc" property="kakaoRtStockDayInfo.nPrc"/>
+        <result column="A.trqt" property="kakaoRtStockDayInfo.trqt"/>
+       <result column="A.inqCn" property="kakaoRtStockDayInfo.inqCn"/> 
+    </resultMap>
+    
+    
+     <select id="getList" parameterType="com.kakao.stock.vo.KakaoRtStockDayInfoVo" resultType="com.kakao.stock.vo.KakaoRtStockDayInfoVo">
+/* tb_rt_stock_day_info.getList */
+SELECT A.bas_dt  AS "basDt"
+	  ,A.code    AS "code"
+      ,A.o_prc   AS "oPrc"
+      ,A.n_prc   AS "nPrc"
+      ,A.trqt    AS "trqt"
+      ,A.inq_cn  AS "inqCn"
+ FROM tb_rt_stock_day_info A
+ WHERE 
+     A.bas_dt=DATE_FORMAT(NOW(),'%Y%m%d')
+     <if test='code != null'> 
+     AND A.code = #{cod, jdbcType=VARCHAR}
+	 </if>
+    </select>
+    
+    
+    
+</mapper>
